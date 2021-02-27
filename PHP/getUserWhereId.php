@@ -1,8 +1,9 @@
+
 <?php
 header("content-type:text/javascript;charset=utf-8");
 error_reporting(0);
 error_reporting(E_ERROR | E_PARSE);
-$link = mysqli_connect('localhost', 'root', 'EWTCeasy4com', "UngFood");
+$link = mysqli_connect('localhost', 'root', '', "bengtravelapp");
 
 if (!$link) {
     echo "Error: Unable to connect to MySQL." . PHP_EOL;
@@ -18,25 +19,24 @@ if (!$link->set_charset("utf8")) {
 	}
 
 if (isset($_GET)) {
-	if ($_GET['isAdd'] == 'true') {
-				
-		$Name = $_GET['Name'];
-		$User = $_GET['User'];
-		$Password = $_GET['Password'];
-		$ChooseType = $_GET['ChooseType'];
-							
-		$sql = "INSERT INTO `userTABLE`(`id`, `ChooseType`, `Name`, `User`, `Password`) VALUES (Null, '$ChooseType', '$Name','$User','$Password')";
-
-		$result = mysqli_query($link, $sql);
+	if ($_GET['isAdd'] == 'true') {	
+		$id = $_GET['id'];	
+		$result = mysqli_query($link, "SELECT * FROM userTable WHERE `id` = '$id'");
 
 		if ($result) {
-			echo "true";
-		} else {
-			echo "false";
-		}
 
-	} else echo "Welcome Master UNG";
+			while($row=mysqli_fetch_assoc($result)){
+			$output[]=$row;
+			}	// while
+
+			echo json_encode($output);
+
+		} //if
+
+	} else echo "Welcome Thinnakorn";	// if2
    
-}
+}	// if1
+
+
 	mysqli_close($link);
 ?>

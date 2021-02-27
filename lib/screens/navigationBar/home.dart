@@ -48,16 +48,20 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     screen = MediaQuery.of(context).size.width;
     screen = MediaQuery.of(context).size.height;
-    return travelModels == 0
+    return travelModels == null
         ? MyStyle().showProgress()
         : ListView.builder(
             itemCount: travelModels.length,
             itemBuilder: (context, index) => Row(
               children: <Widget>[
-                Container(padding: EdgeInsets.only(left: 10,right: 10,top: 10),
+                Container(
+                  padding: EdgeInsets.only(left: 10, right: 10, top: 10),
                   width: MediaQuery.of(context).size.width * 0.5,
-                  height:MediaQuery.of(context).size.width * 0.4,
-                  child: Image.network(travelModels[index].pathImage,fit: BoxFit.cover,),
+                  height: MediaQuery.of(context).size.width * 0.4,
+                  child: Image.network(
+                    '${MyConstant().domain}${travelModels[index].urlImage}',
+                    fit: BoxFit.cover,
+                  ),
                 ),
                 Text(travelModels[index].nameTravel),
               ],

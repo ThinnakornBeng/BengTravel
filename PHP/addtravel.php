@@ -20,12 +20,14 @@ if (isset($_GET)) {
 	if ($_GET['isAdd'] == 'true') {
 				
 		$idName = $_GET['idName'];		
-		$PathImage = $_GET['PathImage'];
+		$UrlImage = $_GET['UrlImage'];
 		$Detail = $_GET['Detail'];
         $NameTravel = $_GET['NameTravel'];
+		$Lat = $_GET["Lat"];
+		$Lng = $_GET["Lng"];
 		
 							
-		$sql = "INSERT INTO `travelTable`(`id`, `idName`, `NameTravel`, `Detail`, `PathImage`) VALUES (Null,'$idName', '$NameTravel', '$Detail','$PathImage')";
+		$sql = "INSERT INTO `travelTable`(`id`, `idName`, `NameTravel`, `Detail`, `UrlImage`, `Lat`, `Lng`) VALUES (Null,'$idName', '$NameTravel', '$Detail','$UrlImage','$Lat','$Lng')";
 
 		$result = mysqli_query($link, $sql);
 

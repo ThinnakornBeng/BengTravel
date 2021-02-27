@@ -24,10 +24,10 @@ if (isset($_GET)) {
 		$User = $_GET['User'];
 		$Password = $_GET['Password'];
 		$Type = $_GET['Type'];
-		$UrlPictuer = $_GET['UrlPicture'];
+		$UrlPicture = $_GET['UrlPicture'];
 		
 							
-		$sql = "INSERT INTO `userTABLE`(`id`, `Name`, `Type`, `User`, `Password`,`UrlPicture`) VALUES (Null, '$Name','$Type' ,'$User','$Password','')";
+		$sql = "INSERT INTO `userTABLE`(`id`, `Name`, `Type`, `User`, `Password`,`UrlPicture`) VALUES (Null, '$Name','$Type' ,'$User','$Password','$UrlPicture)";
 
 		$result = mysqli_query($link, $sql);
 

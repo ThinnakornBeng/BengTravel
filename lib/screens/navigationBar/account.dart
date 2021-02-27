@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:bengtravel/screens/authentication.dart';
 import 'package:bengtravel/screens/model/user_model.dart';
 import 'package:bengtravel/screens/utility/my_constant.dart';
 import 'package:bengtravel/screens/utility/my_style.dart';
@@ -17,18 +15,19 @@ class Account extends StatefulWidget {
 }
 
 class _AccountState extends State<Account> {
-  String nameUser;
+  String nameUser, urlPicture;
   double scree;
-   bool loadStatus = true; // Process Load JSON
+  bool loadStatus = true; // Process Load JSON
   bool status = true; // Have Data
   List<UserModel> userModels = List();
-
+  UserModel userModel;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     findUser();
+    readDataUser();
   }
 
   Future<Null> findUser() async {
@@ -38,38 +37,23 @@ class _AccountState extends State<Account> {
     });
   }
 
-    Future<Null> readFoodMenu() async {
-    if (userModels.length != 0) {
-      userModels.clear();
-    }
-
+  Future<Null> readDataUser() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String id = preferences.getString('id');
-    print('id = $id');
-
+    nameUser = preferences.getString('Name');
     String url =
-        '${MyConstant().domain}/bengfood/getfoodwhereidshop.php?isAdd=true&idShop=$id';
+        '${MyConstant().domain}/bengtravel/PHP/getUserWhereId.php?isAdd=true&id=$id';
+
     await Dio().get(url).then((value) {
-      setState(() {
-        loadStatus = false;
-      });
+      print('Value ===>>> $value');
 
-      if (value.toString() != 'null') {
-        print('varlue ==>> $value');
-
-        var result = json.decode(value.data);
-        print('result ==>> $result');
-
-        for (var map in result) {
-          UserModel userModel = UserModel.fromJson(map);
-          setState(() {
-            userModels.add(userModel);
-          });
-        }
-      } else {
+      var result = json.decode(value.data);
+      print('Result ===>>> $result');
+      for (var map in result) {
         setState(() {
-          status = false;
+          userModel = UserModel.fromJson(map);
         });
+        print('Name ===>>>${userModel.name}');
       }
     });
   }
@@ -78,19 +62,29 @@ class _AccountState extends State<Account> {
   Widget build(BuildContext context) {
     scree = MediaQuery.of(context).size.width;
     return Scaffold(
-      body: Container(
-        margin: EdgeInsets.only(top: 50),
-        child: Column(
-          children: [
-            MyStyle().showTextStyle3('บัญชีผู้ใช้'),
-            buildAccountImage(),
-            buildListTileName(),
-            buildListTileEdit(),
-            buildListTileAddTravel(),
-            buildListTileLogOut(),
-          ],
-        ),
-      ),
+      body: userModel == null
+          ? MyStyle().showProgress()
+          : Container(
+              margin: EdgeInsets.only(top: 50),
+              child: Column(
+                children: [
+                  MyStyle().showTextStyle3('บัญชีผู้ใช้'),
+                  userModel == null
+                      ? MyStyle().showProgress()
+                      : userModel.urlPicture.isEmpty
+                          ? buildAccountImage()
+                          : buildAccountImageUpdate(),
+                  userModel == null
+                      ? MyStyle().showProgress()
+                      : userModel.name.isEmpty
+                          ? buildListTileName()
+                          : buildListTileNameUpdate(),
+                  buildListTileEdit(),
+                  buildListTileAddTravel(),
+                  buildListTileLogOut(),
+                ],
+              ),
+            ),
     );
   }
 
@@ -147,9 +141,29 @@ class _AccountState extends State<Account> {
     );
   }
 
+  ListTile buildListTileNameUpdate() {
+    return ListTile(
+      leading: Icon(Icons.account_box),
+      title: Text(
+        '${userModel.name}',
+      ),
+    );
+  }
+
   Widget buildAccountImage() => Container(
         margin: EdgeInsets.only(top: 10),
         width: scree * 0.4,
         child: Image.asset('images/account.png'),
+      );
+
+  Widget buildAccountImageUpdate() => Container(
+        decoration: BoxDecoration(),
+        margin: EdgeInsets.only(top: 10),
+        width:  125,
+        height: 125,
+        child: CircleAvatar(
+          backgroundImage:
+              NetworkImage('${MyConstant().domain}${userModel.urlPicture}',),
+        ),
       );
 }
