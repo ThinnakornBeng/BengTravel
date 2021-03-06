@@ -16,6 +16,7 @@ class _HomeState extends State<Home> {
   List<TravelModel> travelModels = List();
   List<Widget> shopCards = List();
   int index;
+  bool statusRedEye = true;
 
   @override
   void initState() {
@@ -45,26 +46,86 @@ class _HomeState extends State<Home> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(
+    BuildContext context,
+  ) {
     screen = MediaQuery.of(context).size.width;
     screen = MediaQuery.of(context).size.height;
     return travelModels == null
         ? MyStyle().showProgress()
         : ListView.builder(
             itemCount: travelModels.length,
-            itemBuilder: (context, index) => Row(
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.only(left: 10, right: 10, top: 10),
-                  width: MediaQuery.of(context).size.width * 0.5,
-                  height: MediaQuery.of(context).size.width * 0.4,
-                  child: Image.network(
-                    '${MyConstant().domain}${travelModels[index].urlImage}',
-                    fit: BoxFit.cover,
+            itemBuilder: (context, index) => GestureDetector(
+              onTap: () {
+                print('You Click index $index');
+                MaterialPageRoute route = MaterialPageRoute(
+                  builder: (context) => ShowTravel(
+                    travelModel: travelModels[index],
                   ),
-                ),
-                Text(travelModels[index].nameTravel),
-              ],
+                );
+                Navigator.push(context, route);
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+                        width: MediaQuery.of(context).size.width * 0.5,
+                        height: MediaQuery.of(context).size.width * 0.4,
+                        child: Image.network(
+                          '${MyConstant().domain}${travelModels[index].urlImage}',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+                        width: MediaQuery.of(context).size.width * 0.5,
+                        height: MediaQuery.of(context).size.width * 0.4,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    travelModels[index].nameTravel,
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                              Text(
+                                travelModels[index].detail,
+                                style: TextStyle(fontSize: 17),
+                              ),
+                              // Row(
+                              //   children: [
+                              //     IconButton(
+                              //         icon: statusRedEye
+                              //             ? Icon(Icons.thumb_up)
+                              //             : Icon(
+                              //                 Icons.thumb_up_sharp,
+                              //                 color: Colors.blue,
+                              //               ),
+                              //         onPressed: () {
+                              //           print('You Click index $index');
+                              //           setState(() {
+                              //             statusRedEye = !statusRedEye;
+                              //           });
+                              //         }),
+                              //   ],
+                              // )
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
             ),
           );
   }
